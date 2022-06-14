@@ -170,7 +170,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-06-14 11:33:16 / Modified: 15:04:26" itemprop="dateCreated datePublished" datetime="2022-06-14T11:33:16+08:00">2022-06-14</time>
+              <time title="Created: 2022-06-14 11:33:16 / Modified: 15:24:26" itemprop="dateCreated datePublished" datetime="2022-06-14T11:33:16+08:00">2022-06-14</time>
             </span>
 
           
@@ -193,6 +193,9 @@
 <li><p>java中的 <strong>CopyOnWriteArrayList</strong>是一个线程安全的<code>arraylist</code>,适用于读多写少的场景，每次写操作都会加锁，同时copy一个副本，array是用volatile修饰的，保证了线程的可见性，源码如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">private transient volatile Object[] array;</span><br><span class="line"></span><br><span class="line">public E get(int index) &#123;</span><br><span class="line">    return get(getArray(), index);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public E set(int index, E element) &#123;</span><br><span class="line">    final ReentrantLock lock = this.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    try &#123;</span><br><span class="line">        Object[] elements = getArray();</span><br><span class="line">        E oldValue = get(elements, index);</span><br><span class="line"></span><br><span class="line">        if (oldValue != element) &#123;</span><br><span class="line">            int len = elements.length;</span><br><span class="line">            Object[] newElements = Arrays.copyOf(elements, len);</span><br><span class="line">            newElements[index] = element;</span><br><span class="line">            setArray(newElements);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // Not quite a no-op; ensures volatile write semantics</span><br><span class="line">            setArray(elements);</span><br><span class="line">        &#125;</span><br><span class="line">        return oldValue;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%AF%AB%E5%85%A5%E6%99%82%E8%A4%87%E8%A3%BD">https://zh.wikipedia.org/wiki/%E5%AF%AB%E5%85%A5%E6%99%82%E8%A4%87%E8%A3%BD</a></li>
+</ul>
 
       
     </div>
